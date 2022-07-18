@@ -6,7 +6,7 @@ import {
   MenuItemConstructorOptions,
 } from 'electron';
 
-import { MenuUtils } from './util';
+import { FileOp } from './util';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -92,12 +92,21 @@ export default class MenuBuilder {
         {
           label: 'Open',
           accelerator: 'Command+O',
-          click: MenuUtils.openFile,
+          click: FileOp.openFile,
+        },
+        {
+          label: 'New File',
+          accelerator: 'Command+N',
+          click: FileOp.newFile,
         },
         { type: 'separator' },
-        { label: 'Save', accelerator: 'Command+S', click: () => {} },
+        { label: 'Save', accelerator: 'Command+S', click: FileOp.saveFile },
         { label: 'Save All', accelerator: 'Shift+Command+S', click: () => {} },
-        { label: 'Save As', accelerator: 'Alt+Command+C', click: () => {} },
+        {
+          label: 'Save As',
+          accelerator: 'Alt+Command+C',
+          click: FileOp.saveFileAs,
+        },
       ],
     };
     const subMenuEdit: DarwinMenuItemConstructorOptions = {

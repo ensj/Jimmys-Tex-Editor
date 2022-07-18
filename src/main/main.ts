@@ -14,6 +14,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import * as fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -31,6 +32,20 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('fileSave', async (_event, filePath, fileContent) => {
+  fs.writeFile(filePath, fileContent, (error) => {
+    if (error) {
+      //  handleError(error);
+    } else {
+      // is this even needed?
+      // browserWindow.webContents.send('document-created', filePath);
+    }
+  });
+
+  // this just sends another fileSave to Renderer.
+  // event.reply('fileSave');
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -73,8 +88,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1366,
+    height: 768,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -102,9 +117,9 @@ const createWindow = async () => {
   menuBuilder.buildMenu();
 
   // Open urls in the user's browser
-  mainWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    shell.openExternal(url);
+  mainWindow.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: 'deny' };
   });
 
   // Remove this if your app does not use auto updates

@@ -2,3 +2,10 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+body {
+  margin: 0;
+}
+
+.TabItemRoot {
+  border: 1px solid #e9e9e9;
+}
